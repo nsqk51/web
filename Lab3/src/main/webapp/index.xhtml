@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>Лабораторная работа №3 - Старт</title>
+    <h:outputStylesheet name="css/style.css"/>
+    <style>
+        .bg-blur-wrap {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: url('resources/images/fzt2.gif') center/cover no-repeat;
+            filter: blur(8px);
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at top, rgba(34,197,94,0.4), rgba(15,23,42,0.95));
+        }
+        .time-display {
+            font-size: 1.5rem;
+            font-family: 'Courier New', monospace;
+            color: var(--primary);
+            text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+            transition: opacity 0.4s ease-in-out;
+        }
+        .time-display.updating {
+            opacity: 0.5;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <div class="bg-blur-wrap"></div>
+    <div class="overlay"></div>
+
+    <h:form id="index-form">
+        <div class="container">
+            <header class="header">
+                <div class="title">Абрамова Анастасия Сергеевна</div>
+                <div class="subtitle">Группа: P3211 • Вариант: 3</div>
+            </header>
+
+            <div class="card" style="text-align: center; margin-top: 32px;">
+                <h2>Текущее время</h2>
+
+                <div style="margin-top: 12px; margin-bottom: 24px;">
+                    <h:panelGroup id="time-panel" layout="block">
+                        <h:outputText id="serverTime" value="#{timeBean.currentTime}" styleClass="time-display"/>
+                    </h:panelGroup>
+                </div>
+
+                <h:commandButton value="Перейти к приложению"
+                                 action="to-main"
+                                 styleClass="btn primary"/>
+
+                <h:commandButton id="update-time-button" style="display: none;" >
+                    <f:ajax render=":index-form:time-panel"/>
+                </h:commandButton>
+            </div>
+        </div>
+
+        <h:outputScript target="body">
+            // <![CDATA[
+            (function() {
+                const timeElement = document.getElementById('index-form:serverTime');
+                const updateButton = document.getElementById('index-form:update-time-button');
+
+                if (!updateButton) {
+                    console.error('Не удалось найти кнопку обновления времени.');
+                    return;
+                }
+
+                function triggerUpdate() {
+                    if (timeElement) {
+                        timeElement.classList.add('updating');
+                    }
+                    updateButton.click();
+                }
+
+                if (typeof jsf !== 'undefined') {
+                    jsf.ajax.addOnEvent(function(data) {
+                        if (data.status === 'success') {
+                            if (timeElement) {
+                                setTimeout(() => timeElement.classList.remove('updating'), 200);
+                            }
+                        }
+                    });
+                }
+
+                console.log('Таймер обновления времени запущен. Интервал: 10 секунд.');
+                setInterval(triggerUpdate, 10000);
+            })();
+            // ]]>
+        </h:outputScript>
+    </h:form>
+</h:body>
+</html>
