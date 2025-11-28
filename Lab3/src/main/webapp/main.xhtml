@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>Лабораторная работа №3</title>
+    <h:outputStylesheet name="css/style.css"/>
+    <h:outputScript name="js/app.js" target="body"/>
+</h:head>
+<h:body style="background: url('resources/images/fzt2.gif') center/cover no-repeat fixed;">
+    <div style="position: fixed; inset: 0; background: radial-gradient(140% 100% at 50% 0%, rgba(34,197,94,0.3), rgba(15,23,42,0.95)); z-index: -1;"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="title">Абрамова Анастасия Сергеевна</div>
+            <div class="subtitle">Группа: P3211 • Вариант: 3</div>
+        </header>
+
+        <h:form id="main-form">
+            <h:messages id="messages"
+                        globalOnly="false"
+                        styleClass="messages-container"
+                        errorClass="error-message"
+                        warnClass="warn-message"
+                        infoClass="info-message"
+                        showDetail="true"
+                        showSummary="false"/>
+
+            <div class="grid">
+                <div class="card">
+                    <h2>Ввод данных</h2>
+                    <div class="form">
+                        <div class="form-row">
+                            <h:outputLabel for="x-select" value="X:"/>
+                            <div style="width: 100%;">
+                                <h:selectOneMenu id="x-select"
+                                                 value="#{resultsManager.newResult.x}"
+                                                 styleClass="form-control"
+                                                 required="true"
+                                                 requiredMessage="Выберите значение X из списка">
+                                    <f:selectItem itemLabel="Выберите X" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="-2" itemValue="-2.0"/>
+                                    <f:selectItem itemLabel="-1.5" itemValue="-1.5"/>
+                                    <f:selectItem itemLabel="-1" itemValue="-1.0"/>
+                                    <f:selectItem itemLabel="-0.5" itemValue="-0.5"/>
+                                    <f:selectItem itemLabel="0" itemValue="0.0"/>
+                                    <f:selectItem itemLabel="0.5" itemValue="0.5"/>
+                                    <f:selectItem itemLabel="1" itemValue="1.0"/>
+                                    <f:selectItem itemLabel="1.5" itemValue="1.5"/>
+                                    <f:selectItem itemLabel="2" itemValue="2.0"/>
+                                </h:selectOneMenu>
+                                <h:message for="x-select" styleClass="field-error"/>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <h:outputLabel for="y-input" value="Y:"/>
+                            <div style="width: 100%;">
+                                <h:inputText id="y-input"
+                                             value="#{resultsManager.newResult.y}"
+                                             styleClass="form-control"
+                                             placeholder="(-5 ... 5)"
+                                             maxlength="10"
+                                             required="true"
+                                             requiredMessage="Введите значение Y в диапазоне (-5; 5)">
+                                    <f:validator validatorId="yValidator"/>
+                                </h:inputText>
+                                <h:message for="y-input" styleClass="field-error"/>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <h:outputLabel value="R:"/>
+                            <div style="width: 100%;">
+                                <h:panelGroup id="r-links">
+                                    <h:commandLink value="1" styleClass="r-link #{resultsManager.newResult.r == 1.0 ? 'active' : ''}">
+                                        <f:setPropertyActionListener target="#{resultsManager.newResult.r}" value="1.0"/>
+                                        <f:ajax render="graph r-links r-value" execute="@this"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="2" styleClass="r-link #{resultsManager.newResult.r == 2.0 ? 'active' : ''}">
+                                        <f:setPropertyActionListener target="#{resultsManager.newResult.r}" value="2.0"/>
+                                        <f:ajax render="graph r-links r-value" execute="@this"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="3" styleClass="r-link #{resultsManager.newResult.r == 3.0 ? 'active' : ''}">
+                                        <f:setPropertyActionListener target="#{resultsManager.newResult.r}" value="3.0"/>
+                                        <f:ajax render="graph r-links r-value" execute="@this"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="4" styleClass="r-link #{resultsManager.newResult.r == 4.0 ? 'active' : ''}">
+                                        <f:setPropertyActionListener target="#{resultsManager.newResult.r}" value="4.0"/>
+                                        <f:ajax render="graph r-links r-value" execute="@this"/>
+                                    </h:commandLink>
+                                    <h:commandLink value="5" styleClass="r-link #{resultsManager.newResult.r == 5.0 ? 'active' : ''}">
+                                        <f:setPropertyActionListener target="#{resultsManager.newResult.r}" value="5.0"/>
+                                        <f:ajax render="graph r-links r-value" execute="@this"/>
+                                    </h:commandLink>
+                                    <h:outputText id="r-value" value=" (выбрано: #{resultsManager.newResult.r != null ? resultsManager.newResult.r : 'не выбрано'})" style="margin-left: 10px; color: var(--muted); font-size: 0.9rem;"/>
+                                </h:panelGroup>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <h:commandButton value="Проверить"
+                                             action="#{resultsManager.addResultFromForm}"
+                                             styleClass="btn primary">
+                                <f:ajax execute="@form" render="@form results-table graph"/>
+                            </h:commandButton>
+                            <h:commandButton value="Очистить"
+                                             action="#{resultsManager.clearResults}"
+                                             styleClass="btn"
+                                             immediate="true">
+                                <f:ajax execute="@this" render="@form results-table graph"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>График</h2>
+                    <h:panelGroup id="graph" layout="block" styleClass="graph-wrap">
+                        <svg id="graph-svg" width="400" height="400" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" onclick="handleGraphClick(event)">
+                            <ui:param name="r" value="#{resultsManager.newResult.r != null ? resultsManager.newResult.r : 1.0}"/>
+                            <ui:param name="scale" value="#{40}"/>
+                            <ui:param name="centerX" value="200"/>
+                            <ui:param name="centerY" value="200"/>
+
+                            <!-- Определения для градиентов и свечения -->
+                            <defs>
+                                <linearGradient id="areaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#22c55e;stop-opacity:0.5"/>
+                                    <stop offset="100%" style="stop-color:#16a34a;stop-opacity:0.3"/>
+                                </linearGradient>
+
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+
+                                <filter id="shadow">
+                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                                </filter>
+                            </defs>
+
+                            <!-- Фон сетки -->
+                            <g stroke="#1f2937" stroke-width="0.5" opacity="0.3">
+                                <ui:repeat value="#{[50, 100, 150, 200, 250, 300, 350]}" var="pos">
+                                    <line x1="#{pos}" y1="0" x2="#{pos}" y2="400"/>
+                                    <line x1="0" y1="#{pos}" x2="400" y2="#{pos}"/>
+                                </ui:repeat>
+                            </g>
+
+                            <g fill="url(#areaGradient)" stroke="#22c55e" stroke-width="2" filter="url(#glow)">
+                                <!-- 1 четверть: четверть окружности R -->
+                                <path d="M #{centerX} #{centerY} L #{centerX} #{centerY - r * scale} A #{r * scale} #{r * scale} 0 0 1 #{centerX + r * scale} #{centerY} Z"/>
+
+                                <!-- 3 четверть: треугольник (-R/2, 0), (0, 0), (0, -R/2) -->
+                                <path d="M #{centerX} #{centerY} L #{centerX - r * scale / 2} #{centerY} L #{centerX} #{centerY + r * scale / 2} Z"/>
+
+                                <!-- 4 четверть: прямоугольник (0,0)-(R,0)-(R,-R/2)-(0,-R/2) -->
+                                <rect x="#{centerX}" y="#{centerY}" width="#{r * scale}" height="#{r * scale / 2}"/>
+                            </g>
+
+                            <!-- Оси -->
+                            <line x1="0" y1="#{centerY}" x2="400" y2="#{centerY}" stroke="#e5e7eb" stroke-width="2"/>
+                            <line x1="#{centerX}" y1="0" x2="#{centerX}" y2="400" stroke="#e5e7eb" stroke-width="2"/>
+
+                            <!-- Стрелки -->
+                            <polygon points="400,#{centerY} 390,#{centerY - 5} 390,#{centerY + 5}" fill="#e5e7eb"/>
+                            <polygon points="#{centerX},0 #{centerX - 5},10 #{centerX + 5},10" fill="#e5e7eb"/>
+
+                            <!-- Метки на осях с числами -->
+                            <g fill="#9ca3af" font-size="13" text-anchor="middle" font-family="'Courier New', monospace">
+                                <text x="#{centerX + r * scale}" y="#{centerY - 10}">#{r}</text>
+                                <text x="#{centerX + r * scale / 2}" y="#{centerY - 10}">#{r/2}</text>
+                                <text x="#{centerX - r * scale / 2}" y="#{centerY - 10}">#{-r/2}</text>
+                                <text x="#{centerX - r * scale}" y="#{centerY - 10}">#{-r}</text>
+
+                                <text x="#{centerX - 20}" y="#{centerY - r * scale + 5}">#{r}</text>
+                                <text x="#{centerX - 20}" y="#{centerY - r * scale / 2 + 5}">#{r/2}</text>
+                                <text x="#{centerX - 20}" y="#{centerY + r * scale / 2 + 5}">#{-r/2}</text>
+                                <text x="#{centerX - 20}" y="#{centerY + r * scale + 5}">#{-r}</text>
+
+                                <text x="385" y="#{centerY + 20}" font-size="16" font-style="italic">X</text>
+                                <text x="#{centerX + 20}" y="15" font-size="16" font-style="italic">Y</text>
+                            </g>
+
+                            <!-- Деления на осях -->
+                            <g stroke="#9ca3af" stroke-width="1.5">
+                                <line x1="#{centerX + r * scale}" y1="#{centerY - 5}" x2="#{centerX + r * scale}" y2="#{centerY + 5}"/>
+                                <line x1="#{centerX + r * scale / 2}" y1="#{centerY - 5}" x2="#{centerX + r * scale / 2}" y2="#{centerY + 5}"/>
+                                <line x1="#{centerX - r * scale / 2}" y1="#{centerY - 5}" x2="#{centerX - r * scale / 2}" y2="#{centerY + 5}"/>
+                                <line x1="#{centerX - r * scale}" y1="#{centerY - 5}" x2="#{centerX - r * scale}" y2="#{centerY + 5}"/>
+
+                                <line x1="#{centerX - 5}" y1="#{centerY - r * scale}" x2="#{centerX + 5}" y2="#{centerY - r * scale}"/>
+                                <line x1="#{centerX - 5}" y1="#{centerY - r * scale / 2}" x2="#{centerX + 5}" y2="#{centerY - r * scale / 2}"/>
+                                <line x1="#{centerX - 5}" y1="#{centerY + r * scale / 2}" x2="#{centerX + 5}" y2="#{centerY + r * scale / 2}"/>
+                                <line x1="#{centerX - 5}" y1="#{centerY + r * scale}" x2="#{centerX + 5}" y2="#{centerY + r * scale}"/>
+                            </g>
+
+                            <!-- Точки -->
+                            <ui:repeat value="#{resultsManager.results}" var="point">
+                                <circle cx="#{centerX + point.x * scale}"
+                                        cy="#{centerY - point.y * scale}"
+                                        r="5"
+                                        fill="#{point.hit ? '#22c55e' : '#f87171'}"
+                                        stroke="#{point.hit ? '#16a34a' : '#dc2626'}"
+                                        stroke-width="2"
+                                        filter="url(#shadow)"
+                                        style="cursor: pointer;">
+                                    <title>X: #{point.x}, Y: #{point.y}, R: #{point.r} - #{point.hit ? 'Попадание' : 'Промах'}</title>
+                                </circle>
+                            </ui:repeat>
+                        </svg>
+                    </h:panelGroup>
+
+                    <h:inputHidden id="graph-x" value="#{resultsManager.graphX}"/>
+                    <h:inputHidden id="graph-y" value="#{resultsManager.graphY}"/>
+                    <h:commandButton id="graph-submit" value="Submit Graph" style="display:none;"
+                                     action="#{resultsManager.addResultFromGraph}">
+                        <f:ajax execute="graph-x graph-y @this" render="@form results-table graph"/>
+                    </h:commandButton>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 16px;">
+                <h2>Результаты проверок</h2>
+                <h:panelGroup id="results-table">
+                    <h:dataTable value="#{resultsManager.paginatedResults}"
+                                 var="result"
+                                 styleClass="result-table"
+                                 headerClass="result-header"
+                                 rendered="#{not empty resultsManager.results}">
+                        <h:column>
+                            <f:facet name="header">X</f:facet>
+                            #{result.x}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Y</f:facet>
+                            #{result.y}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">R</f:facet>
+                            #{result.r}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Результат</f:facet>
+                            <span class="#{result.hit ? 'hit' : 'miss'}">
+                                #{result.hit ? 'Попадание' : 'Промах'}
+                            </span>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Время</f:facet>
+                            #{result.formattedServerTime}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Время выполнения</f:facet>
+                            #{result.execTimeNs} нс
+                        </h:column>
+                    </h:dataTable>
+
+                    <div class="pagination" rendered="#{resultsManager.totalPages > 1}">
+                        <h:commandButton value="←"
+                                         action="#{resultsManager.previousPage}"
+                                         disabled="#{resultsManager.currentPage == 0}"
+                                         styleClass="btn pagination-btn">
+                            <f:ajax render="results-table" execute="@this"/>
+                        </h:commandButton>
+
+                        <span class="pagination-info">
+                            Страница #{resultsManager.currentPage + 1} из #{resultsManager.totalPages}
+                            (всего: #{resultsManager.results.size()} результатов)
+                        </span>
+
+                        <h:commandButton value="→"
+                                         action="#{resultsManager.nextPage}"
+                                         disabled="#{resultsManager.currentPage >= resultsManager.totalPages - 1}"
+                                         styleClass="btn pagination-btn">
+                            <f:ajax render="results-table" execute="@this"/>
+                        </h:commandButton>
+                    </div>
+
+                    <div style="text-align: center; padding: 20px; color: var(--muted);"
+                         rendered="#{empty resultsManager.results}">
+                        Результатов пока нет
+                    </div>
+                </h:panelGroup>
+            </div>
+
+            <div style="text-align: center; margin-top: 16px;">
+                <h:commandButton value="← Вернуться на стартовую страницу"
+                                 action="to-index"
+                                 styleClass="btn"
+                                 immediate="true"/>
+            </div>
+        </h:form>
+    </div>
+</h:body>
+</html>
