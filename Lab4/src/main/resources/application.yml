@@ -1,0 +1,19 @@
+server:
+  port: 33137
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/studs?sslmode=disable
+    username: s464906
+    password: eRr1w4OlGDX47W7t
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+app:
+  jwt:
+    secret: "9fA7KpD2xWQeT8mC3VZsR4B6JYHnL0uE"
+    ttlSeconds: 7200
