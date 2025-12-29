@@ -13,11 +13,6 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    /**
-     * Нужен дефолт, чтобы приложение не падало, если app.jwt.secret
-     * не задан при запуске java -jar (на helios часто так и бывает).
-     * В нормальном режиме задай свой секрет через application.yml или ENV.
-     */
     private static final String DEFAULT_SECRET =
             "9fA7KpD2xWQeT8mC3VZsR4B6JYHnL0uE";
 
@@ -65,4 +60,5 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token);
     }
+
 }
