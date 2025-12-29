@@ -15,7 +15,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserService userService; // Добавили сервис
+    private final UserService userService;
 
     public AuthController(AuthenticationManager authenticationManager, JwtService jwtService, UserService userService) {
         this.authenticationManager = authenticationManager;
@@ -39,4 +39,5 @@ public class AuthController {
         String token = jwtService.generateToken(created.getUsername());
         return ResponseEntity.ok(new LoginResponse(token));
     }
+
 }
